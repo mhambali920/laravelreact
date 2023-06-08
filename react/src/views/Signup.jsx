@@ -29,7 +29,7 @@ export default function Signup() {
             .catch((err) => {
                 const response = err.response;
                 if (response && response.status === 422) {
-                    // console.log(response.data.errors);
+                    console.log(response.data.errors);
                     setErrors(response.data.errors);
                 }
             });
@@ -49,7 +49,15 @@ export default function Signup() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    {errors && <div className="bg-red-600 p-4"></div>}
+                    {errors && (
+                        <div className="bg-red-600 p-4 rounded-lg mb-4">
+                            {Object.keys(errors).map((key) => (
+                                <p key={key} className="text-white">
+                                    {errors[key][0]}
+                                </p>
+                            ))}
+                        </div>
+                    )}
                     <form className="space-y-6" onSubmit={onSubmit}>
                         <div>
                             <label
