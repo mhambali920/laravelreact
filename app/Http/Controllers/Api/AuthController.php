@@ -14,7 +14,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
         if (!Auth::attempt($credentials)) {
-            return response(['message' => 'The provided credentials do not match our records.']);
+            return response(['message' => 'The provided credentials do not match our records.'], 422);
         }
         /** @var User $user */
         $user = Auth::user();

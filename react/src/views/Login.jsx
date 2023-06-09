@@ -1,6 +1,42 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../axios-client";
+import { useStateContext } from "../contexts/StateContex";
 
 export default function Login() {
+    const [errors, setErrors] = useState(null);
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const { setUser, setToken } = useStateContext();
+
+    const submit = (e) => {
+        e.preventDefault();
+        setErrors(null);
+        const payload = {
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+        };
+        // console.log(payload);
+        axiosClient
+            .post("/login", payload)
+            .then(({ data }) => {
+                console.log(data);
+                setUser(data.user);
+                setToken(data.token);
+            })
+            .catch((err) => {
+                const response = err.response;
+                if (response && response.status === 422) {
+                    if (response.data.errors) {
+                        setErrors(response.data.errors);
+                    } else {
+                        setErrors({
+                            auth: [response.data.message],
+                        });
+                    }
+                }
+            });
+    };
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -16,7 +52,16 @@ export default function Login() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" action="#" method="POST">
+                    {errors && (
+                        <div className="bg-red-600 p-4 rounded-lg mb-4">
+                            {Object.keys(errors).map((key) => (
+                                <p key={key} className="text-white">
+                                    {errors[key][0]}
+                                </p>
+                            ))}
+                        </div>
+                    )}
+                    <form className="space-y-6" onSubmit={submit}>
                         <div>
                             <label
                                 htmlFor="email"
@@ -26,11 +71,11 @@ export default function Login() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    ref={emailRef}
                                     id="email"
                                     name="email"
                                     type="email"
                                     autoComplete="email"
-                                    required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
@@ -55,11 +100,11 @@ export default function Login() {
                             </div>
                             <div className="mt-2">
                                 <input
+                                    ref={passwordRef}
                                     id="password"
                                     name="password"
                                     type="password"
                                     autoComplete="current-password"
-                                    required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
