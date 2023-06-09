@@ -16,6 +16,7 @@ import {
     PhoneIcon,
     PlayCircleIcon,
 } from "@heroicons/react/20/solid";
+import axiosClient from "../axios-client";
 
 const products = [
     {
@@ -60,7 +61,14 @@ function classNames(...classes) {
 
 export default function NavBar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { user } = useStateContext();
+    const { user, setUser, setToken } = useStateContext();
+    const onLogout = (e) => {
+        e.preventDefault();
+        axiosClient.post("/logout").then(() => {
+            setUser({});
+            setToken(null);
+        });
+    };
 
     return (
         <>
@@ -169,13 +177,17 @@ export default function NavBar() {
                         </Link>
                     </Popover.Group>
                     <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                        <p>{user.name}</p>
-                        <a
-                            href="#"
-                            className="text-sm font-semibold leading-6 text-gray-900"
-                        >
-                            Log out <span aria-hidden="true">&rarr;</span>
-                        </a>
+                        <p className="text-sm font-semibold leading-6 text-gray-900 mr-5">
+                            {user.name}
+                        </p>
+                        <form onSubmit={onLogout}>
+                            <button
+                                type="submit"
+                                className="text-sm font-semibold leading-6 text-gray-900"
+                            >
+                                Log out <span aria-hidden="true">&rarr;</span>
+                            </button>
+                        </form>
                     </div>
                 </nav>
                 <Dialog
@@ -243,31 +255,25 @@ export default function NavBar() {
                                             </>
                                         )}
                                     </Disclosure>
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to="/dashboard"
                                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                     >
-                                        Features
-                                    </a>
-                                    <a
-                                        href="#"
+                                        Dashboard
+                                    </Link>
+                                    <Link
+                                        to="/users"
                                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                     >
-                                        Marketplace
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                    >
-                                        Company
-                                    </a>
+                                        Users
+                                    </Link>
                                 </div>
                                 <div className="py-6">
                                     <a
                                         href="#"
                                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                     >
-                                        Log in
+                                        Log out
                                     </a>
                                 </div>
                             </div>
