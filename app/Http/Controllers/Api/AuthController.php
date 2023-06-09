@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -38,8 +39,10 @@ class AuthController extends Controller
         return response(['user' => $user, 'token' => $token]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        // 
+        $user = $request->user();
+        $user->currentAccessToken()->delete();
+        return response()->noContent();
     }
 }
