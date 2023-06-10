@@ -269,12 +269,17 @@ export default function NavBar() {
                                     </Link>
                                 </div>
                                 <div className="py-6">
-                                    <a
-                                        href="#"
-                                        className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                    >
-                                        Log out
-                                    </a>
+                                    <form onSubmit={onLogout}>
+                                        <button
+                                            type="submit"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                        >
+                                            Log out
+                                            <span aria-hidden="true">
+                                                &rarr;
+                                            </span>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
